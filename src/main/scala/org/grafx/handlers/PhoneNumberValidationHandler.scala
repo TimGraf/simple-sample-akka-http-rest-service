@@ -28,11 +28,11 @@ object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with Valida
      -d 'number=+19256994897'
    */
   def validate(numberString: String)(implicit as: ActorSystem, mt: Materializer, ec: ExecutionContext): Future[ValidateResponse] = {
-    val pnConnectionFlow: Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] = Http().outgoingConnectionTls("neutrinoapi-phone-validate.p.mashape.com")
+    val pnConnectionFlow: Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] = Http().outgoingConnectionTls(apiServiceHost, apiServicePort)
     def pnFutureResponse(request: HttpRequest): Future[HttpResponse]                       = Source.single(request).via(pnConnectionFlow).runWith(Sink.head)
-    val pnRequest: HttpRequest                                                             = HttpRequest(POST, "/phone-validate")
+    val pnRequest: HttpRequest                                                             = HttpRequest(POST, validateEndpoint)
       .withHeaders(
-        RawHeader("X-Mashape-Key", mashApeKey),
+        RawHeader("X-Mashape-Key", apiKey),
         RawHeader("Accept", "application/json")
       )
       .withEntity(
