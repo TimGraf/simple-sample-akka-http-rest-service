@@ -25,7 +25,7 @@ object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with Valida
      -H 'Content-Type: application/x-www-form-urlencoded' \
      -H 'Accept: application/json' \
      -d 'country-code=us' \
-     -d 'number=+19256994897'
+     -d 'number=+18316561725'
    */
   def validate(numberString: String)(implicit as: ActorSystem, mt: Materializer, ec: ExecutionContext): Future[ValidateResponse] = {
     val pnConnectionFlow: Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] = Http().outgoingConnectionTls(apiServiceHost, apiServicePort)
