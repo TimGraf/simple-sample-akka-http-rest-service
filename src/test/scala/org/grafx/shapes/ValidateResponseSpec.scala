@@ -7,14 +7,14 @@ class ValidateResponseSpec extends FlatSpec with Matchers with ValidateResponseP
   def sampleJson: JsValue =
     s"""
        |{
-       |    "valid": true,
+       |    "location": "Monterey, CA",
+       |    "international-number": "+18316561725",
        |    "country-code": "US",
-       |    "international-number": "+19256994897",
-       |    "location": "California",
-       |    "local-number": "(925) 699-4897",
+       |    "valid": true,
        |    "type": "unknown",
        |    "international-calling-code": "1",
-       |    "is-mobile": false
+       |    "is-mobile": false,
+       |    "local-number": "(831) 656-1725"
        |}
      """.stripMargin.parseJson
 
@@ -22,16 +22,16 @@ class ValidateResponseSpec extends FlatSpec with Matchers with ValidateResponseP
     val validateResponse: ValidateResponse = sampleJson.convertTo[ValidateResponse]
 
     validateResponse.valid should be (true)
-    validateResponse.localNumber should be ("(925) 699-4897")
+    validateResponse.localNumber should be ("(831) 656-1725")
   }
 
   "ValidateResponse" should "marshal to JSON" in {
     val validateResponse: ValidateResponse = new ValidateResponse(
       valid = true,
       countryCode = "US",
-      internationalNumber = "+19256994897",
-      location = "California",
-      localNumber = "(925) 699-4897",
+      internationalNumber = "+18316561725",
+      location = "Monterey, CA",
+      localNumber = "(831) 656-1725",
       numberType = "unknown",
       internationalCallingCode = "1",
       isMobile = false
