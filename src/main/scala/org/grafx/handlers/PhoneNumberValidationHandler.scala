@@ -13,9 +13,10 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import com.typesafe.scalalogging.StrictLogging
 import org.grafx.shapes.{ValidateResponseProtocol, ValidateResponse}
+import org.grafx.utils.config.PhoneNumberServiceConfig
 import scala.concurrent.{ExecutionContext, Future}
 
-object PhoneNumberValidationHandler extends ValidateResponseProtocol with StrictLogging {
+object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with ValidateResponseProtocol with StrictLogging {
   /*
      Sample curl command for the call
 
@@ -31,7 +32,7 @@ object PhoneNumberValidationHandler extends ValidateResponseProtocol with Strict
     def pnFutureResponse(request: HttpRequest): Future[HttpResponse]                       = Source.single(request).via(pnConnectionFlow).runWith(Sink.head)
     val pnRequest: HttpRequest                                                             = HttpRequest(POST, "/phone-validate")
       .withHeaders(
-        RawHeader("X-Mashape-Key", "X5K8pUwWNymshdZKvmqAGmP0BkNPp1PkPOrjsnmddtF9CGGwnN"),
+        RawHeader("X-Mashape-Key", mashApeKey),
         RawHeader("Accept", "application/json")
       )
       .withEntity(
