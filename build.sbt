@@ -11,8 +11,7 @@ lazy val root = (project in file(".")).enablePlugins(SbtNativePackager, JavaAppP
 scalaVersion := "2.11.7"
 
 resolvers ++= Seq(
-  "Maven Releases" at "http://repo.typesafe.com/typesafe/maven-releases",
-  "Teachscape" at "http://teachscape.artifactoryonline.com/teachscape/repo"
+  "Maven Releases" at "http://repo.typesafe.com/typesafe/maven-releases"
 )
 
 libraryDependencies ++= {
@@ -31,7 +30,6 @@ libraryDependencies ++= {
     "com.typesafe.akka"           %% "akka-http-experimental"            % akkaStreamVersion,
     "com.typesafe.akka"           %% "akka-http-spray-json-experimental" % akkaStreamVersion,
     "com.typesafe.akka"           %% "akka-http-testkit-experimental"    % akkaStreamVersion,
-    "com.teachscape"              %% "mothership"                        % "1.1.3",
     "org.scalatest"               %% "scalatest"                         % scalaTestVersion  % "test",
     "io.gatling.highcharts"        % "gatling-charts-highcharts"         % "2.1.7"
   )
@@ -77,14 +75,3 @@ artifact in (Universal, packageTgz) ~= { (art:Artifact) => art.copy(`type` = "tg
 addArtifact(artifact in (Universal, packageTgz), packageTgz in Universal): Seq[sbt.Def.Setting[_]]
 
 publish <<= publish dependsOn (packageZipTarball in Universal)
-
-publishTo := {
-  val artifactory = "https://teachscape.artifactoryonline.com/teachscape/"
-
-  if (version.value.endsWith("SNAPSHOT"))
-    Some("Teachscape Artifactory Snapshots Local" at artifactory + "libs-snapshots-local")
-  else
-    Some("Teachscape Artifactory Releases Local" at artifactory + "libs-releases-local")
-}
-
-credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
