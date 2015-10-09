@@ -24,7 +24,7 @@ object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with Valida
      Sample curl command for the call
 
      curl -X POST --include 'https://neutrinoapi-phone-validate.p.mashape.com/phone-validate' \
-     -H 'X-Mashape-Key: X5K8pUwWNymshdZKvmqAGmP0BkNPp1PkPOrjsnmddtF9CGGwnN' \
+     -H 'X-Mashape-Key: <api-key>' \
      -H 'Content-Type: application/x-www-form-urlencoded' \
      -H 'Accept: application/json' \
      -d 'country-code=us' \
