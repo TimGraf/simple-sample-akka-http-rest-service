@@ -28,9 +28,9 @@ object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with Valida
      -d 'number=+18316561725'
    */
   def validate(numberString: String)(implicit as: ActorSystem, mt: Materializer, ec: ExecutionContext): Future[ValidateResponse] = {
-    val pnConnectionFlow: Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] = Http().outgoingConnectionTls(apiServiceHost, apiServicePort)
+    val pnConnectionFlow: Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] = Http().outgoingConnectionTls(apiUrl.getHost)
     def pnFutureResponse(request: HttpRequest): Future[HttpResponse]                       = Source.single(request).via(pnConnectionFlow).runWith(Sink.head)
-    val pnRequest: HttpRequest                                                             = HttpRequest(POST, validateEndpoint)
+    val pnRequest: HttpRequest                                                             = HttpRequest(POST, apiUrl.getPath)
       .withHeaders(
         RawHeader("X-Mashape-Key", apiKey),
         RawHeader("Accept", "application/json")
