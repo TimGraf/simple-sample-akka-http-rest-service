@@ -17,6 +17,9 @@ import org.grafx.utils.config.PhoneNumberServiceConfig
 import scala.concurrent.{ExecutionContext, Future}
 
 object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with ValidateResponseProtocol with StrictLogging {
+  def pnConnectionFlow()(implicit as: ActorSystem, mt: Materializer): Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] = Http().outgoingConnectionTls(apiUrl.getHost)
+  def pnFutureResponse(request: HttpRequest)(implicit as: ActorSystem, mt: Materializer): Future[HttpResponse]                         = Source.single(request).via(pnConnectionFlow).runWith(Sink.head)
+
   /*
      Sample curl command for the call
 
@@ -28,9 +31,7 @@ object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with Valida
      -d 'number=+18316561725'
    */
   def validate(numberString: String)(implicit as: ActorSystem, mt: Materializer, ec: ExecutionContext): Future[ValidateResponse] = {
-    val pnConnectionFlow: Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] = Http().outgoingConnectionTls(apiUrl.getHost)
-    def pnFutureResponse(request: HttpRequest): Future[HttpResponse]                       = Source.single(request).via(pnConnectionFlow).runWith(Sink.head)
-    val pnRequest: HttpRequest                                                             = HttpRequest(POST, apiUrl.getPath)
+    val pnRequest: HttpRequest = HttpRequest(POST, apiUrl.getPath)
       .withHeaders(
         RawHeader("X-Mashape-Key", apiKey),
         RawHeader("Accept", "application/json")
