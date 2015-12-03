@@ -16,7 +16,7 @@ trait PhoneNumberValidationService extends HealthResponseProtocol with ValidateR
   implicit val executor: ExecutionContextExecutor
   implicit val materializer: Materializer
 
-  val libraryAssetsRoutes = {
+  val phoneNumberValidationRoutes = {
     logRequestResult("phone-number-validation-service", InfoLevel) {
       path("health") {
         get {

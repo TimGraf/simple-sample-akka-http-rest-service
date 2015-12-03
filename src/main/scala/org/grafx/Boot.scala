@@ -23,7 +23,7 @@ object Boot extends App with PhoneNumberValidationService with TaskScheduler wit
   override implicit val materializer: ActorMaterializer    = ActorMaterializer()
   override implicit val executor: ExecutionContextExecutor = ExecutionContext.fromExecutorService(executorService)
 
-  Http().bindAndHandle(libraryAssetsRoutes, serviceInterface, servicePort)
+  Http().bindAndHandle(phoneNumberValidationRoutes, serviceInterface, servicePort)
 
   startTaskScheduler()
 }
