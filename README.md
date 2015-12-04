@@ -1,5 +1,7 @@
 ## simple-sample-akka-http-rest-service (phone number validation service)
 
+This service is pretty simple and does not have all of the components shown in the diagram below.  However the diagram shows the components that would be present in a more fully featured service.
+
 ![Architecture](docs/ArchitectureLayersDiagram.png)
 
 ### Framework
