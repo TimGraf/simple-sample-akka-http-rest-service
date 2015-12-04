@@ -1,8 +1,10 @@
 ## simple-sample-akka-http-rest-service (phone number validation service)
 
+![Architecture](docs/ArchitectureLayersDiagram.png)
+
 ### Framework
 
-The service is built using [Akka Streams](http://doc.akka.io/docs/akka-stream-and-http-experimental/current/scala/stream-index.html) and [Akka HTTP](http://doc.akka.io/docs/akka-stream-and-http-experimental/current/scala/http/index.html)
+The service is built using [Akka HTTP](http://doc.akka.io/docs/akka-stream-and-http-experimental/current/scala/http/index.html)
 
 ### Build
 
