@@ -3,6 +3,7 @@ package org.grafx.handlers
 import java.net.URLEncoder
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.MediaType.NotCompressible
 import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.RawHeader
@@ -36,40 +37,10 @@ object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with Valida
      -d 'number=+18316561725'
    */
   def validate(numberString: String)(implicit as: ActorSystem, mt: Materializer, ec: ExecutionContext): Future[ValidateResponse] = {
-    //val data                   = ByteString(s"country-code=us&number=${URLEncoder.encode(numberString, "UTF-8")}")
-    //val headers                = List(RawHeader("X-Mashape-Key", apiKey), RawHeader("Accept", "application/json"))
-    //val entity                 = HttpEntity(
-    //  contentType = ContentType(MediaTypes.`application/x-www-form-urlencoded`, HttpCharsets.`UTF-8`),
-    //  contentLength = data.length,
-    //  Source(List(data))
-    //)
-
-    //val pnRequest: HttpRequest = HttpRequest(POST, apiUrl.getPath, headers = headers, entity = entity)
-      //.withHeaders(
-      //  RawHeader("X-Mashape-Key", apiKey),
-      //  RawHeader("Accept", "application/json")
-      //)
-      //.withEntity(
-        //HttpEntity(s"country-code=us&number=${URLEncoder.encode(numberString, "UTF-8")}").withContentType(MediaTypes.`application/x-www-form-urlencoded`, )
-        //HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`, HttpCharsets.`UTF-8`), s"country-code=us&number=${URLEncoder.encode(numberString, "UTF-8")}")
-
-
-    //HttpEntity(
-    //  contentType = ContentType(MediaTypes.`application/x-www-form-urlencoded`, HttpCharsets.`UTF-8`),
-    //  contentLength = data.length,
-    //  Source(List(data)))
-    //  )
-
-
-
-    val pnRequest: HttpRequest = HttpRequest(POST, apiUrl.getPath)
-      .withHeaders(
-        RawHeader("X-Mashape-Key", apiKey),
-        RawHeader("Accept", "application/json")
-      )
-      .withEntity(
-        HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`), s"country-code=us&number=${URLEncoder.encode(numberString, "UTF-8")}")
-      )
+    val data: ByteString          = ByteString(s"country-code=us&number=${URLEncoder.encode(numberString, "UTF-8")}")
+    val headers: List[HttpHeader] = List(RawHeader("X-Mashape-Key", apiKey), RawHeader("Accept", "application/json"))
+    val entity: RequestEntity     = HttpEntity(data).withContentType(MediaType.customBinary("application", "x-www-form-urlencoded", comp = NotCompressible))
+    val pnRequest: HttpRequest    = HttpRequest(POST, apiUrl.getPath, headers, entity)
 
     val responseWithTimeout = Future.firstCompletedOf(
       pnFutureResponse(pnRequest) ::
@@ -77,20 +48,15 @@ object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with Valida
       Nil
     )
 
-    println(pnRequest.toString)
-
     responseWithTimeout.flatMap { response =>
       response.status match {
         case OK =>
-          println(response)
           Unmarshal(response.entity).to[ValidateResponse].flatMap {
             case validateResponse: ValidateResponse => Future.successful(validateResponse)
           }
 
         case _ =>
           val message = s"Phone number validation failed: ${response.status}"
-
-          println(response)
 
           logger.info(message)
           Future.failed(new Exception(message))
