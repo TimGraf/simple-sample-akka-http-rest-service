@@ -1,5 +1,6 @@
 package org.grafx.shapes
 
+import org.grafx.protocols.ValidateResponseProtocol
 import org.scalatest.{FlatSpec, Matchers}
 import spray.json._
 

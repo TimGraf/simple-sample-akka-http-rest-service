@@ -1,5 +1,6 @@
 package org.grafx.shapes
 
+import org.grafx.protocols.HealthResponseProtocol
 import org.scalatest.{Matchers, FlatSpec}
 import spray.json._
 
