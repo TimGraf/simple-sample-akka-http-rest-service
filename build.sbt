@@ -6,7 +6,7 @@ name := """phone-number-validation"""
 
 organization := "org.grafx"
 
-lazy val root = (project in file(".")).enablePlugins(SbtNativePackager, JavaAppPackaging, UniversalDeployPlugin)
+lazy val root = (project in file(".")).enablePlugins(SbtNativePackager, JavaAppPackaging, UniversalDeployPlugin)//, GatlingPlugin)
 
 scalaVersion := "2.11.7"
 
@@ -15,7 +15,7 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= {
-  val akkaVersion       = "2.4.1"
+  val akkaVersion       = "2.3.12"
   val akkaStreamVersion = "2.0.1"
   val scalaTestVersion  = "2.2.4"
 
@@ -31,7 +31,8 @@ libraryDependencies ++= {
     "com.typesafe.akka"           %% "akka-http-spray-json-experimental" % akkaStreamVersion,
     "com.typesafe.akka"           %% "akka-http-testkit-experimental"    % akkaStreamVersion,
     "org.scalatest"               %% "scalatest"                         % scalaTestVersion  % "test",
-    "io.gatling.highcharts"        % "gatling-charts-highcharts"         % "2.1.7"
+    "io.gatling.highcharts"        % "gatling-charts-highcharts"         % "2.1.7"           % "test",
+    "io.gatling"                   % "gatling-test-framework"            % "2.1.7"           % "test"
   )
 }
 
