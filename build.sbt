@@ -15,7 +15,7 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= {
-  val akkaVersion       = "2.3.12"
+  val akkaVersion       = "2.4.4"
   val akkaStreamVersion = "2.0.1"
   val scalaTestVersion  = "2.2.4"
 

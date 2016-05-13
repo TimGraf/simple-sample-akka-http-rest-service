@@ -12,16 +12,14 @@ import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import akka.pattern.after
 import akka.util.ByteString
 import com.typesafe.scalalogging.StrictLogging
 import org.grafx.protocols.ValidateResponseProtocol
 import org.grafx.shapes.ValidateResponse
 import org.grafx.utils.config.PhoneNumberServiceConfig
-import scala.concurrent.{TimeoutException, ExecutionContext, Future}
-import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContext, Future}
 
-object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with ValidateResponseProtocol with StrictLogging {
+object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with ValidateResponseProtocol with ResponseWithTimeout with StrictLogging {
   def pnConnectionFlow()(implicit as: ActorSystem, mt: Materializer): Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] = Http().outgoingConnectionTls(apiUrl.getHost)
   def pnFutureResponse(request: HttpRequest)(implicit as: ActorSystem, mt: Materializer): Future[HttpResponse]                         = Source.single(request).via(pnConnectionFlow).runWith(Sink.head)
 
@@ -41,13 +39,7 @@ object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with Valida
     val entity: RequestEntity     = HttpEntity(data).withContentType(MediaType.customBinary("application", "x-www-form-urlencoded", comp = NotCompressible))
     val pnRequest: HttpRequest    = HttpRequest(POST, apiUrl.getPath, headers, entity)
 
-    val responseWithTimeout = Future.firstCompletedOf(
-      pnFutureResponse(pnRequest) ::
-      after(serviceTimeout.second, as.scheduler)(Future.failed(new TimeoutException)) ::
-      Nil
-    )
-
-    responseWithTimeout.flatMap { response =>
+    pnFutureResponse(pnRequest).withTimeout(serviceTimeout).flatMap { response =>
       response.status match {
         case OK =>
           Unmarshal(response.entity).to[ValidateResponse].flatMap {
