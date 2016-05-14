@@ -58,7 +58,9 @@ object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with Valida
 
     pnFutureResponse(pnRequest).withTimeout(serviceTimeout).map {
         case Ok(response) => Good(response)
-        case _            => Bad(ClientError.ServiceError("Error communicating with the validation service."))
+        case response     => Bad(ClientError.ServiceError(s"Non OK response from the validation service. ${response.status} - ${response.entity}"))
+    } recover {
+      case error => Bad(ClientError.ServiceError(s"Error communicating with the validation service. ${error.getLocalizedMessage}"))
     }
   }
 }
