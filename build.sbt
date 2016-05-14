@@ -8,7 +8,7 @@ organization := "org.grafx"
 
 lazy val root = (project in file(".")).enablePlugins(SbtNativePackager, JavaAppPackaging, UniversalDeployPlugin)//, GatlingPlugin)
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 resolvers ++= Seq(
   "Maven Releases" at "http://repo.typesafe.com/typesafe/maven-releases"
@@ -16,7 +16,7 @@ resolvers ++= Seq(
 
 libraryDependencies ++= {
   val akkaVersion       = "2.4.4"
-  val akkaStreamVersion = "2.0.1"
+  val akkaStreamVersion = "2.0.4"
   val scalaTestVersion  = "2.2.4"
 
   Seq(
@@ -30,6 +30,7 @@ libraryDependencies ++= {
     "com.typesafe.akka"           %% "akka-http-experimental"            % akkaStreamVersion,
     "com.typesafe.akka"           %% "akka-http-spray-json-experimental" % akkaStreamVersion,
     "com.typesafe.akka"           %% "akka-http-testkit-experimental"    % akkaStreamVersion,
+    "org.typelevel"               %% "cats"                              % "0.5.0",
     "org.scalatest"               %% "scalatest"                         % scalaTestVersion  % "test",
     "io.gatling.highcharts"        % "gatling-charts-highcharts"         % "2.1.7"           % "test",
     "io.gatling"                   % "gatling-test-framework"            % "2.1.7"           % "test"

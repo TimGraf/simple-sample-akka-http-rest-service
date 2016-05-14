@@ -6,9 +6,11 @@ import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model._
 import akka.stream.Materializer
-import org.grafx.handlers.{PhoneNumberValidationHandler, HealthHandler}
-import org.grafx.protocols.{ValidateResponseProtocol, HealthResponseProtocol}
+import org.grafx.handlers.{HealthHandler, PhoneNumberValidationHandler}
+import org.grafx.protocols.{HealthResponseProtocol, ValidateResponseProtocol}
 import com.typesafe.scalalogging.StrictLogging
+import org.grafx.shapes.HealthResponse
+import org.grafx.utils.cats.xor.{Bad, Good}
 import spray.json._
 import scala.concurrent.ExecutionContextExecutor
 
@@ -20,21 +22,19 @@ trait ResponseMarshaller extends Protocols with StrictLogging {
   implicit val materializer: Materializer
 
   def marshalHealthResponse: ToResponseMarshallable = {
-    (
-      for {
-        health <- HealthHandler.getHealth
-      } yield ToResponseMarshallable(health)
-    ) recover {
+    HealthHandler.getHealth.map {
+      case health: HealthResponse => ToResponseMarshallable(health)
+      case _                      => ToResponseMarshallable(HttpResponse(StatusCodes.InternalServerError))
+    } recover {
       case _ => ToResponseMarshallable(HttpResponse(StatusCodes.InternalServerError))
     }
   }
 
   def marshalValidateResponse(numberString: String): ToResponseMarshallable = {
-    (
-      for {
-        result <- PhoneNumberValidationHandler.validate(numberString)
-      } yield ToResponseMarshallable(HttpResponse(status = StatusCodes.OK, entity = HttpEntity(MediaTypes.`application/json`, result.toJson.compactPrint)))
-    ) recover {
+    PhoneNumberValidationHandler.validate(numberString).map {
+      case Good(result) => ToResponseMarshallable(HttpResponse(status = StatusCodes.OK, entity = HttpEntity(MediaTypes.`application/json`, result.toJson.compactPrint)))
+      case Bad(error)   => ToResponseMarshallable(HttpResponse(StatusCodes.ServiceUnavailable))
+    } recover {
       case tex: TimeoutException => ToResponseMarshallable(HttpResponse(StatusCodes.ServiceUnavailable))
       case _                     => ToResponseMarshallable(HttpResponse(StatusCodes.InternalServerError))
     }

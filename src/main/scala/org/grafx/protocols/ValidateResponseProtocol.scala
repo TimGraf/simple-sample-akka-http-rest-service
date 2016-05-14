@@ -1,21 +1,22 @@
 package org.grafx.protocols
 
+import com.typesafe.scalalogging.StrictLogging
 import org.grafx.shapes.ValidateResponse
 import spray.json._
 
-trait ValidateResponseProtocol extends DefaultJsonProtocol {
+trait ValidateResponseProtocol extends DefaultJsonProtocol with NullOptions with StrictLogging {
 
   implicit def validateResponseJsonFormat = new RootJsonFormat[ValidateResponse] {
 
     def write(validateResponse: ValidateResponse): JsObject = JsObject(
       "valid"                      -> JsBoolean(validateResponse.valid),
-      "location"                   -> JsString(validateResponse.location),
-      "international-number"       -> JsString(validateResponse.internationalNumber),
-      "international-calling-code" -> JsString(validateResponse.internationalCallingCode),
+      "location"                   -> JsString(validateResponse.location.getOrElse("")),
+      "international-number"       -> JsString(validateResponse.internationalNumber.getOrElse("")),
+      "international-calling-code" -> JsString(validateResponse.internationalCallingCode.getOrElse("")),
       "type"                       -> JsString(validateResponse.numberType),
-      "is-mobile"                  -> JsBoolean(validateResponse.isMobile),
-      "local-number"               -> JsString(validateResponse.localNumber),
-      "country-code"               -> JsString(validateResponse.countryCode)
+      "is-mobile"                  -> JsBoolean(validateResponse.isMobile.getOrElse(false)),
+      "local-number"               -> JsString(validateResponse.localNumber.getOrElse("")),
+      "country-code"               -> JsString(validateResponse.countryCode.getOrElse(""))
     )
 
     def read(value: JsValue): ValidateResponse = value.asJsObject.getFields(
@@ -35,7 +36,11 @@ trait ValidateResponseProtocol extends DefaultJsonProtocol {
           JsString(numberType),
           JsBoolean(isMobile),
           JsString(localNumber),
-          JsString(countryCode)) => ValidateResponse(valid, location, internationalNumber, internationalCallingCode, numberType, isMobile, localNumber, countryCode)
+          JsString(countryCode)) => ValidateResponse(valid, Some(location), Some(internationalNumber), Some(internationalCallingCode), numberType, Some(isMobile), Some(localNumber), Some(countryCode))
+
+        case Seq(
+          JsBoolean(valid),
+          JsString(numberType)) => ValidateResponse(valid, None, None, None, numberType, None, None, None)
 
         case e => deserializationError(s"Expected ValidateResponse as JsObject, but got $e")
     }
