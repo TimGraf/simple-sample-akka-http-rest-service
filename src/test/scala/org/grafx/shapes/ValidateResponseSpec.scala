@@ -23,19 +23,19 @@ class ValidateResponseSpec extends FlatSpec with Matchers with ValidateResponseP
     val validateResponse: ValidateResponse = sampleJson.convertTo[ValidateResponse]
 
     validateResponse.valid should be (true)
-    validateResponse.localNumber should be ("(831) 656-1725")
+    validateResponse.localNumber should be (Some("(831) 656-1725"))
   }
 
   "ValidateResponse" should "marshal to JSON" in {
     val validateResponse: ValidateResponse = new ValidateResponse(
       valid = true,
-      countryCode = "US",
-      internationalNumber = "+18316561725",
-      location = "Monterey, CA",
-      localNumber = "(831) 656-1725",
+      countryCode = Some("US"),
+      internationalNumber = Some("+18316561725"),
+      location = Some("Monterey, CA"),
+      localNumber = Some("(831) 656-1725"),
       numberType = "unknown",
-      internationalCallingCode = "1",
-      isMobile = false
+      internationalCallingCode = Some("1"),
+      isMobile = Some(false)
     )
     val json: JsValue = validateResponse.toJson
 
