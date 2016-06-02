@@ -12,7 +12,7 @@ import org.grafx.utils.config.{ServiceConfig, MessagesConfig}
 import scala.concurrent.{ExecutionContextExecutor, ExecutionContext}
 import scala.language.postfixOps
 
-object Boot extends App with PhoneNumberValidationService with TaskScheduler with ServiceConfig with MessagesConfig with StrictLogging {
+object Boot extends App with PhoneNumberValidationService with ServiceConfig with TaskScheduler with MessagesConfig with StrictLogging {
   val processors: Int                  = Runtime.getRuntime.availableProcessors
   val executorService: ExecutorService = Executors.newFixedThreadPool(processors)
 

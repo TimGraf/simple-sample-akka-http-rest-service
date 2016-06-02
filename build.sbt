@@ -1,12 +1,10 @@
 import com.atlassian.labs.gitstamp.GitStampPlugin._
-import com.typesafe.sbt.packager.SettingsHelper._
-import spray.revolver.RevolverPlugin.Revolver
 
 name := """phone-number-validation"""
 
 organization := "org.grafx"
 
-lazy val root = (project in file(".")).enablePlugins(SbtNativePackager, JavaAppPackaging, UniversalDeployPlugin)//, GatlingPlugin)
+lazy val root = (project in file(".")).enablePlugins(JavaAppPackaging, DockerPlugin)
 
 scalaVersion := "2.11.8"
 
@@ -41,9 +39,6 @@ libraryDependencies ++= {
 // https://bitbucket.org/pkaeding/sbt-git-stamp
 Seq( gitStampSettings: _* )
 
-// continuous build
-Revolver.settings: Seq[sbt.Def.Setting[_]]
-
 // run options
 javaOptions in run ++= Seq(
   "-Dconfig.file=src/main/resources/application.conf",
@@ -59,21 +54,12 @@ scalacOptions in Test ++= Seq("-Yrangepos")
 
 fork := true
 
-// deploy
-deploymentSettings
+Revolver.settings
 
-publishMavenStyle := true
+mappings in Docker += {
+  val conf = (resourceDirectory in Compile).value / "application.conf"
+  conf -> "/opt/docker/conf/application.conf"
+}
 
-// sbt-native-packager - universal:publish
-makeDeploymentSettings(Universal, packageZipTarball in Universal, "tgz")
-
-// sbt-release - publish
-val packageTgz = taskKey[File]("package-zip-tarball")
-
-packageTgz := (baseDirectory in Compile).value / "target" / "universal" / (name.value + "-" + version.value + ".tgz")
-
-artifact in (Universal, packageTgz) ~= { (art:Artifact) => art.copy(`type` = "tgz", extension = "tgz") }
-
-addArtifact(artifact in (Universal, packageTgz), packageTgz in Universal): Seq[sbt.Def.Setting[_]]
-
-publish <<= publish dependsOn (packageZipTarball in Universal)
+dockerExposedPorts := Seq(9000)
+dockerEntrypoint := Seq("bin/%s" format executableScriptName.value, "-Dconfig.file=/opt/docker/conf/application.conf")

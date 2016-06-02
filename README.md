@@ -12,10 +12,22 @@ The service is built using [Akka HTTP](http://doc.akka.io/docs/akka-stream-and-h
 
 We use [sbt](http://www.scala-sbt.org) as our build tool
 
+```
+sbt clean compile test
+```
+
 ### Run
 
 The following command will run the service
 
 ```
 $ sbt run
+```
+
+or with Docker
+
+```
+sbt docker:publishLocal
+eval "$(docker-machine env default)"
+docker run -it phone-number-validation:0.1-SNAPSHOT
 ```
