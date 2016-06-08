@@ -31,3 +31,7 @@ sbt docker:publishLocal
 eval "$(docker-machine env default)"
 docker run -it phone-number-validation:0.1-SNAPSHOT
 ```
+
+When running locally the Swagger API documentation is available at the following URL
+
+http://localhost:9000/swagger/index.html
