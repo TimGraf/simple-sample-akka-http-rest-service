@@ -5,8 +5,14 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Directives._
 import akka.stream.Materializer
 import com.typesafe.scalalogging.StrictLogging
+import io.swagger.annotations._
+import javax.ws.rs.Path
+import org.grafx.shapes.ValidateResponse
+
 import scala.concurrent.ExecutionContextExecutor
 
+@Api(value = "/validate", description = "Operations about phone number validation", produces = "application/json")
+@Path("/validate/{numberString}")
 trait PhoneNumberValidationService extends ResponseMarshaller with StrictLogging {
   implicit val system: ActorSystem
   implicit val executor: ExecutionContextExecutor
@@ -14,16 +20,26 @@ trait PhoneNumberValidationService extends ResponseMarshaller with StrictLogging
 
   val phoneNumberValidationRoutes = {
     logRequestResult("phone-number-validation-service", InfoLevel) {
-      path("health") {
-        get {
-          complete(marshalHealthResponse)
-        }
-      } ~
-      pathPrefix("validate") {
-        (get & path(Segment)) { numberString =>
-          complete(marshalValidateResponse(numberString))
-        }
+      getValidate ~ path("health") {
+        getHealth
       }
+    }
+  }
+
+  def getHealth = get {
+    complete(marshalHealthResponse)
+  }
+
+  @ApiOperation(httpMethod = "GET", response = classOf[ValidateResponse], value = "Returns a validation response based on phone number")
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "numberString", required = true, dataType = "string", paramType = "path", value = "phone number to be validated")
+  ))
+  @ApiResponses(Array(
+    new ApiResponse(code = 500, message = "Internal server error")
+  ))
+  def getValidate = pathPrefix("validate") {
+    (get & path(Segment)) { numberString =>
+      complete(marshalValidateResponse(numberString))
     }
   }
 }
