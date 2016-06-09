@@ -25,7 +25,7 @@ trait SwaggerService extends SwaggerConfig with SwaggerHttpService with HasActor
   override val info = Info(version = "1.0") //api info
 
   val swaggerUIAssetRoutes = {
-    logRequestResult("swagger-ui-asset-service", InfoLevel) {
+    logRequestResult("swagger-service", InfoLevel) {
       pathPrefix("swagger") {
         getFromResourceDirectory("swagger") ~ pathSingleSlash(get(redirect("index.html", StatusCodes.PermanentRedirect)))
       }

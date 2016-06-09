@@ -15,7 +15,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ExecutorService
 
 import org.grafx.services.{PhoneNumberValidationService, SwaggerService}
-import org.grafx.tasks.TaskScheduler
+import org.grafx.scheduler.TaskScheduler
 import org.grafx.utils.config.{MessagesConfig, ServiceConfig}
 
 
