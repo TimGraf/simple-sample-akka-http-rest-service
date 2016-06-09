@@ -4,15 +4,19 @@ import akka.event.Logging._
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Directives._
 import akka.stream.Materializer
+
 import com.typesafe.scalalogging.StrictLogging
+
 import io.swagger.annotations._
+
 import javax.ws.rs.Path
+
 import scala.concurrent.ExecutionContextExecutor
 
 @Api(value = "/", produces = "application/json")
 @Path("/")
 trait PhoneNumberValidationService extends ResponseMarshaller with StrictLogging {
-  implicit val system: ActorSystem
+  implicit val actorSystem: ActorSystem
   implicit val executor: ExecutionContextExecutor
   implicit val materializer: Materializer
 

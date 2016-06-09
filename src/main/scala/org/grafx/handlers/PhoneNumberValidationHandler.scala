@@ -9,7 +9,6 @@ import akka.http.scaladsl.model.headers.RawHeader
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import akka.http.scaladsl.model.HttpMethods._
-import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.util.ByteString
@@ -19,10 +18,6 @@ import org.grafx.shapes.ValidateResponse
 import org.grafx.utils.config.PhoneNumberServiceConfig
 import org.grafx.utils.cats.xor.{Bad, Good, Or}
 import scala.concurrent.{ExecutionContext, Future}
-
-object Ok {
-  def unapply(resp: HttpResponse) = Some(resp).filter(_.status == OK)
-}
 
 object PhoneNumberValidationHandler extends PhoneNumberServiceConfig with ValidateResponseProtocol with ResponseWithTimeout with StrictLogging {
 

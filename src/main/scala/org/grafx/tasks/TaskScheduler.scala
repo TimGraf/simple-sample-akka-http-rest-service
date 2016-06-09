@@ -19,7 +19,7 @@ import spray.json._
  */
 
 trait TaskScheduler extends SchedulerConfig with StrictLogging with ValidateResponseProtocol {
-  implicit val system: ActorSystem
+  implicit val actorSystem: ActorSystem
   implicit def executor: ExecutionContextExecutor
   implicit val materializer: Materializer
 
@@ -29,9 +29,9 @@ trait TaskScheduler extends SchedulerConfig with StrictLogging with ValidateResp
   def startTaskScheduler() = {
     logger.info("Task scheduler started ...")
 
-    implicit val schedulerExecutor: ExecutionContext = system.dispatchers.lookup("task-scheduler")
+    implicit val schedulerExecutor: ExecutionContext = actorSystem.dispatchers.lookup("task-scheduler")
 
-    system.scheduler.schedule(taskSchedulerInterval.minutes, taskSchedulerInterval.minutes) {
+    actorSystem.scheduler.schedule(taskSchedulerInterval.minutes, taskSchedulerInterval.minutes) {
       logger.info("Performing scheduled tasks ...")
 
       Future.traverse(batchPhoneNumbers)(number => PhoneNumberValidationHandler.validate(number)).map {

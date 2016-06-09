@@ -19,7 +19,7 @@ import scala.concurrent.ExecutionContextExecutor
 trait Protocols extends HealthResponseProtocol with ValidateResponseProtocol
 
 trait ResponseMarshaller extends Protocols with StrictLogging {
-  implicit val system: ActorSystem
+  implicit val actorSystem: ActorSystem
   implicit def executor: ExecutionContextExecutor
   implicit val materializer: Materializer
 
