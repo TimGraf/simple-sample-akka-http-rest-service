@@ -8,13 +8,13 @@ import akka.stream.Materializer
 
 import scala.concurrent.ExecutionContextExecutor
 
-trait SwaggerAssetService {
+trait SwaggerUIAssetService {
   implicit val system: ActorSystem
   implicit val executor: ExecutionContextExecutor
   implicit val materializer: Materializer
 
-  val swaggerAssetRoutes = {
-    logRequestResult("swagger-asset-service", InfoLevel) {
+  val swaggerUIAssetRoutes = {
+    logRequestResult("swagger-ui-asset-service", InfoLevel) {
       pathPrefix("swagger") {
         getFromResourceDirectory("swagger") ~ pathSingleSlash(get(redirect("index.html", StatusCodes.PermanentRedirect)))
       }

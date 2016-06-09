@@ -8,14 +8,14 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ExecutorService
 
 import akka.http.scaladsl.server.Directives._
-import org.grafx.services.{PhoneNumberValidationService, SwaggerAssetService, SwaggerDocService}
+import org.grafx.services.{PhoneNumberValidationService, SwaggerUIAssetService, SwaggerDocService}
 import org.grafx.tasks.TaskScheduler
 import org.grafx.utils.config.{MessagesConfig, ServiceConfig}
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 import scala.language.postfixOps
 
-object Boot extends App with PhoneNumberValidationService with SwaggerAssetService with ServiceConfig with TaskScheduler with MessagesConfig with StrictLogging {
+object Boot extends App with PhoneNumberValidationService with SwaggerUIAssetService with ServiceConfig with TaskScheduler with MessagesConfig with StrictLogging {
   val processors: Int                  = Runtime.getRuntime.availableProcessors
   val executorService: ExecutorService = Executors.newFixedThreadPool(processors)
 
@@ -26,7 +26,7 @@ object Boot extends App with PhoneNumberValidationService with SwaggerAssetServi
   override implicit val materializer: ActorMaterializer    = ActorMaterializer()
   override implicit val executor: ExecutionContextExecutor = ExecutionContext.fromExecutorService(executorService)
 
-  val routesWithSwagger = swaggerAssetRoutes ~ phoneNumberValidationRoutes ~ new SwaggerDocService[PhoneNumberValidationService](system, serviceInterface, servicePort).routes
+  val routesWithSwagger = swaggerUIAssetRoutes ~ phoneNumberValidationRoutes ~ new SwaggerDocService[PhoneNumberValidationService](system, serviceInterface, servicePort).routes
 
   Http().bindAndHandle(routesWithSwagger, serviceInterface, servicePort)
 
