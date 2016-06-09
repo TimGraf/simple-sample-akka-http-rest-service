@@ -26,7 +26,7 @@ object Boot extends App with PhoneNumberValidationService with SwaggerAssetServi
   override implicit val materializer: ActorMaterializer    = ActorMaterializer()
   override implicit val executor: ExecutionContextExecutor = ExecutionContext.fromExecutorService(executorService)
 
-  val routesWithSwagger = swaggerAssetRoutes ~ phoneNumberValidationRoutes ~ new SwaggerDocService(system, serviceInterface, servicePort).routes
+  val routesWithSwagger = swaggerAssetRoutes ~ phoneNumberValidationRoutes ~ new SwaggerDocService[PhoneNumberValidationService](system, serviceInterface, servicePort).routes
 
   Http().bindAndHandle(routesWithSwagger, serviceInterface, servicePort)
 

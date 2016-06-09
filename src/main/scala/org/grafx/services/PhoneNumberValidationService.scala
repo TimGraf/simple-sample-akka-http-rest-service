@@ -7,12 +7,10 @@ import akka.stream.Materializer
 import com.typesafe.scalalogging.StrictLogging
 import io.swagger.annotations._
 import javax.ws.rs.Path
-import org.grafx.shapes.ValidateResponse
-
 import scala.concurrent.ExecutionContextExecutor
 
-@Api(value = "/validate", description = "Operations about phone number validation", produces = "application/json")
-@Path("/validate/{numberString}")
+@Api(value = "/", produces = "application/json")
+@Path("/")
 trait PhoneNumberValidationService extends ResponseMarshaller with StrictLogging {
   implicit val system: ActorSystem
   implicit val executor: ExecutionContextExecutor
@@ -20,21 +18,29 @@ trait PhoneNumberValidationService extends ResponseMarshaller with StrictLogging
 
   val phoneNumberValidationRoutes = {
     logRequestResult("phone-number-validation-service", InfoLevel) {
-      getValidate ~ path("health") {
-        getHealth
-      }
+      getValidate ~ getHealth
     }
   }
 
-  def getHealth = get {
-    complete(marshalHealthResponse)
+  @Path("health")
+  @ApiOperation(httpMethod = "GET", value = "Returns a health response for this service")
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "OK"),
+    new ApiResponse(code = 500, message = "Internal server error")
+  ))
+  def getHealth = path("health") {
+    get {
+      complete(marshalHealthResponse)
+    }
   }
 
-  @ApiOperation(httpMethod = "GET", response = classOf[ValidateResponse], value = "Returns a validation response based on phone number")
+  @Path("validate/{numberString}")
+  @ApiOperation(httpMethod = "GET", value = "Returns a validation response based on phone number")
   @ApiImplicitParams(Array(
     new ApiImplicitParam(name = "numberString", required = true, dataType = "string", paramType = "path", value = "phone number to be validated")
   ))
   @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "OK"),
     new ApiResponse(code = 500, message = "Internal server error")
   ))
   def getValidate = pathPrefix("validate") {
