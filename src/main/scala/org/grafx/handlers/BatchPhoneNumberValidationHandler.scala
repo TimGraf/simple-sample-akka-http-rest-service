@@ -13,7 +13,7 @@ import scala.concurrent.{ExecutionContext, Future}
 object BatchPhoneNumberValidationHandler extends StrictLogging with ValidateResponseProtocol {
 
   def batchProcessPhoneNumbers()(implicit as: ActorSystem, mt: Materializer, ec: ExecutionContext) = {
-    val batchPhoneNumbers = getPhoneNumbers()
+    val batchPhoneNumbers = getPhoneNumbers
 
     Future.traverse(batchPhoneNumbers)(number => PhoneNumberValidationHandler.validate(number)).map {
       case responses: List[ClientError Or ValidateResponse] => responses.foreach {
@@ -25,7 +25,7 @@ object BatchPhoneNumberValidationHandler extends StrictLogging with ValidateResp
     }
   }
 
-  private def getPhoneNumbers() = {
+  private def getPhoneNumbers = {
     // List of phone numbers to validate would come from some persistence
     List("4155539755", "4155583200", "4153552600")
   }
