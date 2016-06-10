@@ -24,6 +24,7 @@ libraryDependencies ++= {
     "com.typesafe.akka"            %% "akka-testkit"                      % akkaVersion % "test",
     "com.typesafe.akka"            %% "akka-http-experimental"            % akkaVersion,
     "com.typesafe.akka"            %% "akka-http-spray-json-experimental" % akkaVersion,
+    "ch.megard"                    %% "akka-http-cors"                    % "0.1.2",
     "org.typelevel"                %% "cats"                              % "0.5.0",
     "com.github.swagger-akka-http" %% "swagger-akka-http"                 % "0.7.0",
     "org.scalatest"                %% "scalatest"                         % scalaTestVersion  % "test",
