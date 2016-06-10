@@ -22,7 +22,7 @@ trait SwaggerService extends SwaggerConfig with SwaggerHttpService with HasActor
   override val host = swaggerHost
   override val basePath = swaggerBasePath
   override val apiDocsPath = swaggerApiDocsPath
-  override val info = Info(version = "1.0") //api info
+  override val info = Info(version = "1.0.0") //api info
 
   val swaggerUIAssetRoutes = {
     logRequestResult("swagger-service", InfoLevel) {

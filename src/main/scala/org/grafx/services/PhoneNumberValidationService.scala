@@ -22,7 +22,7 @@ trait PhoneNumberValidationService extends ResponseMarshaller with StrictLogging
 
   val phoneNumberValidationRoutes = {
     logRequestResult("phone-number-validation-service", InfoLevel) {
-      getValidate ~ getHealth
+      getValidate ~ getHealth ~ getVersion
     }
   }
 
@@ -35,6 +35,18 @@ trait PhoneNumberValidationService extends ResponseMarshaller with StrictLogging
   def getHealth = path("health") {
     get {
       complete(marshalHealthResponse)
+    }
+  }
+
+  @Path("version")
+  @ApiOperation(httpMethod = "GET", value = "Returns the version for this service")
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "OK"),
+    new ApiResponse(code = 500, message = "Internal server error")
+  ))
+  def getVersion = path("version") {
+    get {
+      complete(marshalVersionResponse)
     }
   }
 

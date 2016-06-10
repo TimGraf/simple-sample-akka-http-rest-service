@@ -54,8 +54,9 @@ fork := true
 Revolver.settings
 
 mappings in Docker += {
-  val conf = (resourceDirectory in Compile).value / "application.conf"
-  conf -> "/opt/docker/conf/application.conf"
+  (resourceDirectory in Compile).value / "application.conf" -> "/opt/docker/conf/application.conf"
+  (resourceDirectory in Compile).value / "global.conf" -> "/opt/docker/conf/global.conf"
+  (resourceDirectory in Compile).value / "logback.xml" -> "/opt/docker/conf/logback.xml"
 }
 
 dockerExposedPorts := Seq(9000)

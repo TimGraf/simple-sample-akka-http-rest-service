@@ -21,7 +21,7 @@ sbt clean compile test
 The following command will run the service
 
 ```
-$ sbt run
+sbt run
 ```
 
 or with Docker
@@ -29,7 +29,7 @@ or with Docker
 ```
 sbt docker:publishLocal
 eval "$(docker-machine env default)"
-docker run -it phone-number-validation:0.1-SNAPSHOT
+docker run -it phone-number-validation:1.0-SNAPSHOT
 ```
 
 When running locally the Swagger API documentation is available at the following URL
